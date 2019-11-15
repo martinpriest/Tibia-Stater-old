@@ -1,0 +1,34 @@
+<div id="etlPanel">
+    <div class="menu">
+        <div class="row">
+                <select name="etlWorld" id="etlWorldList"></select>
+                <label for="playersTopic">Players: </label>
+                <input type="checkbox" name="players" id="playersTopic">
+                <label for="highscoresTopic">Highscores: </label>
+                <input type="checkbox" name="highscores" id="highscoresTopic">
+                <label for="guildsTopic">Guilds: </label>
+                <input type="checkbox" name="guilds" id="guildsTopic" disabled>
+        </div>
+        <div class="row">
+            <button id="extractButton" class="btn btn-success" onclick="extract()">Extract</button>
+            <button id="transformButton" class="btn btn-success" onclick="transform()">Transform</button>
+            <button id="loadButton" class="btn btn-success" onclick="load()">Load</button>
+            <button id="etlButton" class="btn btn-success" onclick="etlOperation()">ETL</button>
+            <button id="clearButton" class="btn btn-danger" onclick="clearDb()">Clear DB</button>
+        </div>
+        <div id="#actualInfo" class="row">
+            <div id="extractInfo">
+
+            </div>
+            <div id="transformInfo">
+                
+            </div>
+        </div>
+    </div>
+
+    <div class="console">
+
+    </div>
+</div>
+
+<script src="js/etl.js"></script>

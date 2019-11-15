@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>TEST</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Martel:700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.20/datatables.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Wruczek/Bootstrap-Cookie-Alert@gh-pages/cookiealert.css">
+
+    <!-- Libki JS-->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" integrity="sha384-xrRywqdh3PHs8keKZN+8zzc5TX0GRTLCcmivcbNJWm2rs5C8PRhcEn3czEjhAO9o" crossorigin="anonymous"></script>
+
+    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.20/datatables.min.js"></script>
+</head>
+<body>
+        
+        <input class="form-control" type="text" id="name" placeholder="Wprowadz imie">
+        <input class="form-control" type="text" id="formerNames" placeholder="Wprowadz stare imie">
+        <button class="btn btn-success" onclick="addInput()">DODAJ DO WEJŚCIA</button>       
+    <div class="wejscie">
+        <table class="table table-hover table-striped table-dark w-75">
+            <thead>
+                <tr>
+                    <td>#</td>
+                    <td>name</td>
+                    <td>formerName</td>
+                </tr>
+            </thead>
+            <tbody id="inputBody">
+
+            </tbody>
+        </table>
+        <button class="btn btn-success" onclick="pushInputToDB()">Sprawdz id</button>
+    </div>
+    <h1>PLAYERS TABLE</h1>
+    <div class="dbTPlayers">
+        <table class="table table-hover table-striped table-dark w-75">
+            <thead>
+                <tr>
+                    <td>id</td>
+                    <td>name</td>
+                    <td>formerNames</td>
+                    <td>sex</td>
+                </tr>
+            </thead>
+            <tbody id="dbTPlayersBody">
+
+            </tbody>
+        </table>
+    </div>
+    <h1>FORMER NAMES TABLE</h1>
+    <div class="dbTPlayerFormerNames">
+        <table class="table table-hover table-striped table-dark w-75">
+            <thead>
+                <tr>
+                    <td>id</td>
+                    <td>idPlayer</td>
+                    <td>formerName</td>
+                    <td>idTime</td>
+                </tr>
+            </thead>
+            <tbody id="dbTPlayerFormerNamesBody">
+
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        var playerInputArr = Array();
+        // DB array
+        var playersTable = Array();
+        var playersFormerNameTable = Array();
+
+        var idTime=0;
+
+        function addFormerNames(arr) {
+            var formerNameArr = arr.formerNames.split(',');
+            return formerNameArr;
+        }
+
+        function drawInputTable(arr) {
+            let i=1;
+            $("#inputBody").empty();
+            arr.forEach(player => {
+                $("#inputBody").append(`<tr><td>${i}</td><td>${player.name}</td><td>${player.formerNames}</td>`);
+                i++;
+            })
+        }
+
+        function drawPlayersTable(arr) {
+            $("#dbTPlayersBody").empty();
+            arr.forEach(player => {
+                $("#dbTPlayersBody").append(`<tr><td>${player.id}</td><td>${player.name}</td><td>${player.formerNames}</td><td>male</td>`);
+            })
+        }
+
+        function drawFormerNamesTable(arr) {
+            let i=1;
+            $("#dbTPlayerFormerNamesBody").empty();
+            arr.forEach(player => {
+                $("#dbTPlayerFormerNamesBody").append(`<tr><td>${i}</td><td>${player.idPlayer}</td><td>${player.formerName}</td><td>${player.idTime}</td></tr>`);
+                i++;
+            })
+        }
+
+        function addInput() {
+            var name = $("#name").val();
+            var formerNames = $("#formerNames").val();
+
+            // formularz do tablicy
+            if(formerNames == "") formerNames = null;
+            let player = {
+                "name" : name,
+                "formerNames" : formerNames
+            }
+
+            playerInputArr.push(player);
+            drawInputTable(playerInputArr);
+        }
+
+        function pushInputToDB() {
+            idTime++;
+            // jeżeli tabela DB jest pusta to bez pardonu dodajemy wszelkie rekordy
+            if(!playersTable.length) {
+                let i=1;
+                playerInputArr.forEach( player => {
+                    player.id = i; i++;
+                    playersTable.push(player);
+
+                    if(player.formerNames != "") {
+                        
+                        var formerNameArr = player.formerNames.split(', ');
+                        formerNameArr.forEach( formerName => {
+
+                            var formerNamesRecord = {
+                                'idPlayer': player.id,
+                                'formerName' : formerName,
+                                'idTime' : idTime
+                            }
+    
+                            playersFormerNameTable.push(formerNamesRecord);
+                        })
+                    }
+
+                    drawFormerNamesTable(playersFormerNameTable);
+                })
+
+                playerInputArr = [];
+                $("#inputBody").empty();
+            } else { // jak tabela w DB ma już jakieś rekordy
+                playerInputArr.forEach( playerInput => {
+                    var wasName = false;
+                    var wasFormerName = false;
+
+                    playersTable.forEach( playerTable => {
+                        if(playerInput.name == playerTable.name) {
+                            wasName = true;
+                            if(playerInput.formerNames == playerTable.formerNames) wasFormerName = true;
+                        }
+                    })
+                    console.log(`Gracz ${playerInput.name}:`);
+                    if(wasName) {
+                        console.log(`      już istnieje w bazie danych.`)
+                        if(wasFormerName) console.log("      FormerName jest takie samo");
+                        else console.log("      FormerName sie zmienilo");
+                    } else {
+                        console.log(`     Nie istnieje w bazie danych`);
+                        playersTable.push(playerInput);
+                    }
+                })
+            }
+
+            //rysuj tabele
+
+            playerInputArr = [];
+            drawInputTable(playerInputArr);
+            drawPlayersTable(playersTable);
+            drawFormerNamesTable(playersFormerNameTable);
+        }
+
+        /* 
+Witam,
+pobieram do hurtowni danych dane w postaci
+[xml]
+<player>
+     <name>User1</name>
+     <formerNames>User1.1, User1.2, User1,3</formerNames>
+     <param1>X</param1>
+     <param2>Y</param2>
+     <param3>Z</param3>
+</player>
+[/xml]
+
+Co wiemy o procesie zmiany nicku?
+1. Name można zmieniać codziennie
+2. FormerName może utrzymywać się 
+
+        */
+    </script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<nav class="navbar navbar-expand-md navbar-light bg-transparent">
+
+        <a class="navbar-brand" href="#">TibiaStater</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+            aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    
+        <div class="collapse navbar-collapse col-md-10 mr-lg-auto" id="navbarResponsive">
+                
+
+            <ul class="navbar-nav w-100">
+
+                <div class="col-12 col-sm-12 col-md-3">
+                    <select class="form-control form-control-md">
+                        <option value="s1">Server1</option>
+                        <option value="s2">Server2</option>
+                        <option value="s3">Server3</option>
+                    </select>
+                </div>
+
+                <div class="col-10 col-sm-12 col-md-2 pl-0 pr-0"><li class="nav-item"><a class="nav-link" onclick="loadPlayerSite()" href="#">Players</a></li></div>
+                    
+                
+                <div class="col-10 col-sm-12 col-md-3 pl-0 pr-0">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="highscoresDropdown" role="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">Highscores</a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="highscoresDropdown">
+                            <a class="dropdown-item" href="#" onclick="loadHighscoresSite('achievment')">Achievment Points</a>
+                            <a class="dropdown-item" href="#" onclick="loadHighscoresSite('axe')">Axe fighting</a>
+                            <a class="dropdown-item" href="#" onclick="loadHighscoresSite('club')">Club Fighring</a>
+                            <a class="dropdown-item" href="#" onclick="loadHighscoresSite('distance')">Distance Fighring</a>
+                            <a class="dropdown-item" href="#" onclick="loadHighscoresSite('experience')">Experience</a>
+                            <a class="dropdown-item" href="#" onclick="loadHighscoresSite('fishing')">Fishing</a>
+                            <a class="dropdown-item" href="#" onclick="loadHighscoresSite('loyalty')">Loyalty Points</a>
+                            <a class="dropdown-item" href="#" onclick="loadHighscoresSite('magic')">Magic Level</a>
+                            <a class="dropdown-item" href="#" onclick="loadHighscoresSite('shielding')">Shielding</a>
+                            <a class="dropdown-item" href="#" onclick="loadHighscoresSite('sword')">Sword Fighring</a>
+                        </div>
+                    </li>
+                </div>
+                
+                <div class="col-12 col-sm-12 col-md-2 pl-0 pr-0">
+                    <li class="nav-item">
+                        <a class="nav-link" data-container="body" data-toggle="popover" data-placement="bottom"
+                            data-content="Guild stats in progress." data-trigger="hover" href="#">Guilds</a>
+                    </li>
+                </div>
+    
+                <div id="login-form" class="col-12 col-sm-12 col-md-2 pl-0 pr-0">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="loginDropdown" role="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">Admin Panel</a>
+                        <div class="dropdown-menu dropdown-menu-right m-0" aria-labelledby="loginDropdown">
+                                <a class="dropdown-item" href="#" onclick="loadETLSite()">ETL</a>
+                                <a class="dropdown-item" href="#" onclick="loadSchedulerSite()">Scheduler</a>
+                                <a class="dropdown-item" href="#" onclick="loadShowLogsSite()">Show logs</a>
+                                <a class="dropdown-item"  href="#" onclick="logout()">Logout</a>
+                        </div>
+                    </li>
+                </div>
+    
+            </ul>
+        </div>
+    </nav>

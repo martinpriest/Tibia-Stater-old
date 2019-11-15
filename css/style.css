@@ -1,0 +1,66 @@
+body {
+    background-image: url("../img/bg.jpg");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    padding: 0px;
+    margin: 0px;
+}
+
+.site {
+    background: rgba(200, 200, 200, 0.6);
+    margin: 0 auto;
+    margin-top: 20px;
+    border-radius: 20px;
+    min-height: 700px;
+    width: 90%;
+    position: relative;
+    margin-bottom: 20px;
+}
+
+#menu > button > a:visited { color: white;}
+
+#menu a.nav-link { text-align: center;}
+#menu a.nav-link:hover { color: white;}
+#menu > button > a:link { color: white;}
+
+#menu a.dropdown-item:hover { background-color: rgba(255, 75, 91, 1) !important; }
+
+.content {
+    width: 100%;
+    min-height: 84%;
+    padding: 20px;
+}
+
+.footer {
+    border-top: black 3px solid;
+    width: 100%;
+    padding-top: 5px;
+    margin-bottom: 10px;
+    margin-top: 15px;
+    position: absolute;
+    bottom: 0px;
+}
+
+.footer > p {
+    text-align: center;
+    margin: 0 auto;
+    text-decoration: bold;
+    font-weight: 650;
+}
+
+/*  */
+.background-opacity {
+    background-color:rgba(255, 2, 2, 0.5) !important;
+}
+
+@media only screen and (min-width : 768px) {
+    .dropdown-menu {
+        width: 300px !important;
+    }
+}
+
+@media only screen and (min-width : 1200px) {
+    .site {
+        max-width: 1140px !important;
+    }
+}
