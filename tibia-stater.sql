@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Czas generowania: 17 Lis 2019, 07:08
+-- Czas generowania: 30 Lis 2019, 07:11
 -- Wersja serwera: 10.1.38-MariaDB
 -- Wersja PHP: 7.3.4
 
@@ -77,6 +77,7 @@ CREATE TABLE `players_transaction` (
   `idTime` int(11) NOT NULL,
   `idWorld` int(11) NOT NULL,
   `idPlayer` int(11) NOT NULL,
+  `idResidence` int(11) NOT NULL,
   `level` int(11) NOT NULL,
   `timeOnline` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
@@ -164,7 +165,7 @@ CREATE TABLE `vocations` (
 
 CREATE TABLE `worlds` (
   `id` int(11) NOT NULL,
-  `name` int(11) NOT NULL,
+  `name` varchar(32) COLLATE utf8_polish_ci NOT NULL,
   `idLocation` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
@@ -216,7 +217,8 @@ ALTER TABLE `players_transaction`
   ADD PRIMARY KEY (`id`),
   ADD KEY `idTime` (`idTime`),
   ADD KEY `idWorld` (`idWorld`),
-  ADD KEY `idPlayer` (`idPlayer`);
+  ADD KEY `idPlayer` (`idPlayer`),
+  ADD KEY `idResidence` (`idResidence`);
 
 --
 -- Indeksy dla tabeli `player_name_history`
@@ -244,6 +246,12 @@ ALTER TABLE `player_world_history`
   ADD KEY `idFormerWorld` (`idFormerWorld`);
 
 --
+-- Indeksy dla tabeli `residences`
+--
+ALTER TABLE `residences`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indeksy dla tabeli `time`
 --
 ALTER TABLE `time`
@@ -260,6 +268,7 @@ ALTER TABLE `vocations`
 --
 ALTER TABLE `worlds`
   ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `name` (`name`),
   ADD KEY `idLocation` (`idLocation`);
 
 --
@@ -315,6 +324,12 @@ ALTER TABLE `player_world_history`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT dla tabeli `residences`
+--
+ALTER TABLE `residences`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT dla tabeli `time`
 --
 ALTER TABLE `time`
@@ -358,7 +373,8 @@ ALTER TABLE `highscore_transaction`
 ALTER TABLE `players_transaction`
   ADD CONSTRAINT `players_transaction_ibfk_1` FOREIGN KEY (`idPlayer`) REFERENCES `players` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE,
   ADD CONSTRAINT `players_transaction_ibfk_2` FOREIGN KEY (`idWorld`) REFERENCES `worlds` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE,
-  ADD CONSTRAINT `players_transaction_ibfk_3` FOREIGN KEY (`idTime`) REFERENCES `time` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
+  ADD CONSTRAINT `players_transaction_ibfk_3` FOREIGN KEY (`idTime`) REFERENCES `time` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `players_transaction_ibfk_4` FOREIGN KEY (`idResidence`) REFERENCES `residences` (`id`);
 
 --
 -- Ograniczenia dla tabeli `player_name_history`

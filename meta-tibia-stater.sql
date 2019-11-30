@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Czas generowania: 17 Lis 2019, 07:07
+-- Czas generowania: 30 Lis 2019, 07:11
 -- Wersja serwera: 10.1.38-MariaDB
 -- Wersja PHP: 7.3.4
 
@@ -21,8 +21,6 @@ SET time_zone = "+00:00";
 --
 -- Baza danych: `meta-tibia-stater`
 --
-CREATE DATABASE IF NOT EXISTS `meta-tibia-stater` DEFAULT CHARACTER SET utf8 COLLATE utf8_polish_ci;
-USE `meta-tibia-stater`;
 
 -- --------------------------------------------------------
 
@@ -124,6 +122,7 @@ CREATE TABLE `scheduler` (
 CREATE TABLE `transform_history` (
   `id` int(11) NOT NULL,
   `idUser` int(11) NOT NULL,
+  `idWorld` int(11) NOT NULL,
   `fileParsed` int(11) NOT NULL,
   `executionTime` float NOT NULL,
   `operationDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -223,7 +222,8 @@ ALTER TABLE `scheduler`
 --
 ALTER TABLE `transform_history`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `idUser` (`idUser`);
+  ADD KEY `idUser` (`idUser`),
+  ADD KEY `idWorld` (`idWorld`);
 
 --
 -- Indeksy dla tabeli `users`

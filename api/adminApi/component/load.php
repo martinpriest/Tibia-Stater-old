@@ -66,14 +66,46 @@ class Load {
         // 1. Wczytaj plik z graczami
         $playerListFile = file_get_contents("{$root}/api/adminApi/data/{$world}/characters.json");
         $playersArr = json_decode($playerListFile, true);
-        // 2. Pobierz aktualną listę: światów, miast, graczy
+        // Pobierz ostatni rekord z tabeli time i sprawdz czy jest dniem dzisiejszym. Jeśli nie to dodaj rekord i pobierz lastInsertedId()
+
+        // 2. Pobierz aktualną listę: światów, miast, graczy aby porównać czy istnieje
+
+        // $worldArr = new World();
+        // $worldArr->read();
+
+        // $residenceArr = new Residence();
+        // $residenceArr->read();
+
+        // $vocationArr = new Vocation();
+        // $vocationArr->read();
+        // testowo zanim nie zrobilem klas odwzorowania z bazy danych
+        $residenceArr = array(
+            1 => "Thais",
+            2 => "Carlin",
+            3 => "Venore"
+        );
+        // Iterujemy po wszystkich graczach z pliku JSON
+        foreach($playersArr as $player) {
+            //$playerToInsert = new Player();
+
+            // pzypisanie id miasta z bazy danych
+            if(false !== $idResidence = array_search($player["residence"], $residenceArr)) {
+                // Jest juz w bazie danych czyli wstawiamy idResidence do Playera
+                echo "Miasto jest w tablicy. Jego id to {$idResidence}.\n";
+            } else {
+                // Nie ma miasta w bazie danych. Dodajemy więc miasto do bazy danych i pobieramy jego ID. Pobrane ID miasta wstawiamy do playera
+                echo "Miasta nie ma w tablicy. Jest z " . $player["residence"] . "\n";
+            }
+            // tak samo jak wyzej zrobic z profesja gracza
+        }
         
-        //$residenceArr = 
+
+
 
 
 
         // var_dump($playersArr["Aass Bryggeri"]);
-        // echo $playersArr["Aass Bryggeri"]["sex"];
+        // echo $playersArr["Aass Bryggeri"]["residence"];
     }
 
     private function loadHighscores() {
