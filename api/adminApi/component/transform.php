@@ -76,28 +76,30 @@ class Transform {
         foreach($highscoreTypes as $type) {
             for($i=1; $i<13; $i++) {
                 $filePath = "{$root}/api/adminApi/data/{$worldName}/highscores/{$type}/{$i}.html";
-                $fileContent = file_get_contents($filePath);
-
-                $html = str_get_html($fileContent);
-                $tableContent = $html->find('div.InnerTableContainer', 1)->find('tr[style="background-color:#F1E0C6;"], tr[style="background-color:#D4C0A1;"]');
-
-                foreach($tableContent as $highscoreRecord) {
-                    $playerName = utf8_encode($highscoreRecord->find('text', 1));
-                    $typeName = ucfirst($type);
-                    if($type == "experience" || $type == "loyalty") $rankValue = intval(str_replace(',', '', utf8_encode($highscoreRecord->find('text', 4))));
-                    else $rankValue = intval(str_replace(',', '', utf8_encode($highscoreRecord->find('text', 3))));
-                    
-                    $player = array(
-                        "{$playerName}"=>array(
-                            "world" => $worldName,
-                            "highscore{$typeName}" => array(
-                                "rankPosition" => utf8_encode($highscoreRecord->find('text', 0)),
-                                "rankValue" => $rankValue
+                if(is_file($filePath)) {
+                    $fileContent = file_get_contents($filePath);
+                    $this->filesReadCounter++;
+                    $html = str_get_html($fileContent);
+                    $tableContent = $html->find('div.InnerTableContainer', 1)->find('tr[style="background-color:#F1E0C6;"], tr[style="background-color:#D4C0A1;"]');
+    
+                    foreach($tableContent as $highscoreRecord) {
+                        $playerName = utf8_encode($highscoreRecord->find('text', 1));
+                        $typeName = ucfirst($type);
+                        if($type == "experience" || $type == "loyalty") $rankValue = intval(str_replace(',', '', utf8_encode($highscoreRecord->find('text', 4))));
+                        else $rankValue = intval(str_replace(',', '', utf8_encode($highscoreRecord->find('text', 3))));
+                        
+                        $player = array(
+                            "{$playerName}"=>array(
+                                "world" => $worldName,
+                                "highscore{$typeName}" => array(
+                                    "rankPosition" => utf8_encode($highscoreRecord->find('text', 0)),
+                                    "rankValue" => $rankValue
+                                )
                             )
-                        )
-                    );
-                    // array_push($playerNames, $playerName);
-                    array_push($highscorePlayersArr, $player);
+                        );
+                        // array_push($playerNames, $playerName);
+                        array_push($highscorePlayersArr, $player);
+                    }
                 }
             }
         }

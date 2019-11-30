@@ -1,12 +1,13 @@
 <?php
 
-class TransformHistry {
+class TransformHistory {
     // PROPETERIES
     private $table_name = "transform_history";
     private $conn;
 
     private $id;
     private $idUser;
+    private $idWorld;
     private $fileParsed;
     private $executionTime;
 
@@ -45,6 +46,19 @@ class TransformHistry {
         }
     }
 
+    public function getIdWorld() : ?int {
+        return $this->idWorld;
+    }
+    public function setIdWorld(int $idWorld) : self {
+        if(is_numeric($idWorld)) {
+            $this->idWorld = $idWorld;
+            return $this;
+        } else {
+            http_response_code(400);
+            exit(json_encode(array("message" => "Error found at: file:" . __FILE__ . ",class: " . __CLASS__ . ", function: " . __METHOD__ . ", ")));
+        }
+    }
+
     public function getFileParsed() : ?int {
         return $this->fileParsed;
     }
@@ -75,16 +89,19 @@ class TransformHistry {
     public function create() {
         $query = "INSERT INTO {$this->table_name} SET 
                 idUser = :idUser,
+                idWorld = :idWorld,
                 fileParsed = :fileParsed,
                 executionTime = :executionTime";
         // przygotuj zapytanie
         $stmt = $this->conn->prepare($query);
         // sanityzacja zmiennych obiektu
         $this->idUser=htmlspecialchars(strip_tags($this->idUser));
+        $this->idWorld=htmlspecialchars(strip_tags($this->idWorld));
         $this->fileParsed=htmlspecialchars(strip_tags($this->fileParsed));
         $this->executionTime=htmlspecialchars(strip_tags($this->executionTime));
         //wstawianie zmiennych obiketu do zapytania
         $stmt->bindParam(':idUser', $this->idUser, PDO::PARAM_INT);
+        $stmt->bindParam(':idWorld', $this->idWorld, PDO::PARAM_INT);
         $stmt->bindParam(':fileParsed', $this->fileParsed, PDO::PARAM_INT);
         $stmt->bindParam(':executionTime', $this->executionTime);
         //jesli zapytanie sie wykona poprawnie zwroc true

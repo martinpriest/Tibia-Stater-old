@@ -18,13 +18,15 @@ if($_SESSION['active']) {
     // 1. Pobierz nową listę serwerów
     $extract = new Extract();
     $worldsArr = $extract->getServers();
-    // 2. Wprowadź listę do bazy danych (pod klucz unique)
+    // 2. Wprowadź listę do bazy danych (pod klucz unique) oraz zapisz tą liste do pliku (do późniejszego load)
     $world = new World($db);
     foreach($worldsArr as $worldName) {
         $world->setName($worldName['name']);
         $world->setLocation($worldName['location']);
         $world->create();
     }
+    $root = $_SERVER['DOCUMENT_ROOT'];
+    file_put_contents("{$root}/api/adminApi/data/worldList.json", json_encode($worldsArr));
     // 3. Pobierz wszystkie servery z bazy danych
     $worldsArr = $world->read();
     http_response_code(200);

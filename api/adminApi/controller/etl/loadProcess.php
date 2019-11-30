@@ -29,39 +29,35 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 set_time_limit(1800);
 // INCLUDUJ POTRZEBNE PLIKI
 include_once '../../config/db-meta.php';
+include_once '../../config/db-warehouse.php';
 include_once '../../model/transformHistory.php'; // dodanie rekordu po kazdej ekstrakcji
 require_once '../../model/world.php';
-require_once '../../component/transform.php';
+require_once '../../component/load.php';
 
 if($_SESSION['active']) {
+    $data = json_decode(file_get_contents("php://input"));
+
     $stoper_start = microtime(true);
 
     //OBIEKT POLACZENIA
-    $database = new Database();
-    $db = $database->getConnection();
+    $databaseW = new DatabaseW();
+    $dbW = $databaseW->getConnection();
 
-    $data = json_decode(file_get_contents("php://input"));
+    $databaseM = new Database();
+    $dbM = $databaseM->getConnection();
 
-    $world = new World($db);
+
+    
+    $world = new World($dbM);
     $world->setId(intval($data->idWorld));
     $world->readById();
-    $worldName = $world->getName();
 
-    $transform = new Transform();
-    $transform->transformAllFiles($worldName);
+    $worldName = $world->getName();
+    $load = new Load($dbW);
+    $load->loadAll($worldName);
 
     $stoper_stop = microtime(true);
     $executionTime = round(($stoper_stop - $stoper_start), 3);
-
-    $transformHistory = new TransformHistory($db);
-    $transformHistory->setIdUser($_SESSION['idUser'])
-                    ->setIdWorld(intval($data->idWorld))
-                    ->setFileParsed($transform->getFilesReadCounter())
-                    ->setExecutionTime($executionTime);
-    $transformHistory->create();
-
-    $world->setLastOperation(2);
-    $world->update();
 
     http_response_code(200);
     exit(json_encode(array("executionTime" => $executionTime)));

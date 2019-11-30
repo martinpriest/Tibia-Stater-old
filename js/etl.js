@@ -39,7 +39,7 @@ $("#etlWorldList").change(function() {
     // ostatnia operacja to transform
     } else if(selectedWorldLastOperation == 2) {
         $("#transformButton").attr("disabled", false).removeClass("btn-secondary").addClass("btn-success");
-        $("#loadButton").attr("disabled", true).removeClass("btn-success").addClass("btn-secondary");
+        $("#loadButton").attr("disabled", false).removeClass("btn-secondary").addClass("btn-success");
     }
 })
 
@@ -89,12 +89,20 @@ function extract() {
     });
   }
 
-  function transform() {
+function transform() {
     var world = $( "#etlWorldList" ).val();
 
     var form_data = {
         "idWorld"     : world
     };
+
+    $(".console").append(`<p>Rozpoczęto transformacje dla ${$( "#etlWorldList option:selected" ).text()}.</p>`);
+    $("#etlWorldList").attr("disabled", true);
+    $("#extractButton").attr("disabled", true).removeClass("btn-success").addClass("btn-secondary");
+    $("#transformButton").attr("disabled", true).removeClass("btn-success").addClass("btn-secondary");
+    $("#loadButton").attr("disabled", true).removeClass("btn-success").addClass("btn-secondary");
+    $("#etlButton").attr("disabled", true).removeClass("btn-success").addClass("btn-secondary");
+    $("#clearButton").attr("disabled", true).removeClass("btn-success").addClass("btn-secondary");
 
     $.ajax({
         url: 'api/adminApi/controller/etl/transformProcess.php',
@@ -105,6 +113,40 @@ function extract() {
         statusCode: {
             200: function(response) {
                 $(".console").append(`<p>Zakończono proces transformacji dla ${$( "#etlWorldList option:selected" ).text()}. Czas wykonania: ${response.executionTime}s.`);
+                $("#etlWorldList").attr("disabled", false);
+                $("#extractButton").attr("disabled", false).removeClass("btn-secondary").addClass("btn-success");
+                $("#transformButton").attr("disabled", false).removeClass("btn-secondary").addClass("btn-success");
+                $("#loadButton").attr("disabled", false).removeClass("btn-secondary").addClass("btn-success");
+                $("#etlButton").attr("disabled", false).removeClass("btn-secondary").addClass("btn-success");
+                $("#clearButton").attr("disabled", false).removeClass("btn-secondary").addClass("btn-success");
+                $("#etlWorldList option:selected").attr('data-last-operation', 2);
+            },
+            400: function(response) {
+                alert(response.responseJSON.message);
+            },
+            500: function(response) {
+                console.log(response);
+            }
+        }
+    });
+}
+
+function load() {
+    var world = $( "#etlWorldList" ).val();
+
+    var form_data = {
+        "idWorld"     : world
+    };
+
+    $.ajax({
+        url: 'api/adminApi/controller/etl/loadProcess.php',
+        type: 'POST',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(form_data),
+        dataType: 'json',
+        statusCode: {
+            200: function(response) {
+                console.log(response);
             },
             400: function(response) {
                 alert(response.responseJSON.message);
