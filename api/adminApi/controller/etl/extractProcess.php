@@ -51,6 +51,7 @@ if($_SESSION['active']) {
 
     // ekstrakcja
     $extract = new Extract();
+    $extract->getServers(); // aby utworzyl znow foldery
     if($data->onlineListTopic == 1) {
         $extract->extractOnlineList($worldName);
         $world->setOnlinePlayersReady(1);

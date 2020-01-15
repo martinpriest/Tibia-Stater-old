@@ -1,12 +1,11 @@
 <?php
 
-class WorldW {
+class Vocation {
     private $conn;
-    private $table_name = "worlds";
+    private $table_name = "vocations";
     
     private $id;
     private $name;
-    private $idLocation;
 
     // konstruktor
     public function __construct($db) {
@@ -34,11 +33,11 @@ class WorldW {
     public function setName(string $name): self {
         if (empty($name)) {
             http_response_code(400);
-            exit(json_encode(array("message" => "Wprowadź name$name!")));
+            exit(json_encode(array("message" => "Wprowadź name!")));
         } else if (is_numeric($name)) {
             http_response_code(400);
             exit(json_encode(array("message" => "Name nie może być liczbą!")));
-        } else if (strlen($name) < 4 || strlen($name) > 64) {
+        } else if (strlen($name) < 4 || strlen($name) > 32) {
             http_response_code(400);
             exit(json_encode(array("message" => "Name musi mieć od 4 do 32 znaków!")));
         } else {
@@ -46,55 +45,21 @@ class WorldW {
             return $this;
         }
     }
-
-    // idLocation
-    public function getIdLocation(): ?int {
-        return $this->idLocation;
-    }
-    public function setIdLocation(int $idLocation): self {
-        if (is_numeric($idLocation)) {
-            $this->idLocation = $idLocation;
-            return $this;
-        } else {
-            http_response_code(400);
-            exit(json_encode(array("message" => "Nieprawidlowy format danych")));
-        }
-    }
-
+    
     public function create() {
         $query = "INSERT INTO {$this->table_name}
-                SET name = :name,
-                    idLocation = :idLocation";
-        $stmt = $this->conn->preapre($query);
-        $this->name = htmlspecialchars(strip_tags($this->idDevice));
-        $this->idLocation = htmlspecialchars(strip_tags($this->idLocation));
+                SET name = :name";
+        $stmt = $this->conn->prepare($query);
+        $this->name = htmlspecialchars(strip_tags($this->name));
         $stmt->bindParam(':name', $this->name);
-        $stmt->bindParam(':idLocation', $this->idLocation);
         if($stmt->execute()) {
+            $this->id = $this->conn->lastInsertId();
             return true;
         } else {
             http_response_code(503);
             exit(json_encode(array("message" => "Blad bazy danych")));
         }
     }
-
-    public function readByName() {
-        $query = "SELECT * FROM {$this->table_name} WHERE name = :name";
-        $stmt = $this->conn->prepare($query);
-
-        $this->name = htmlspecialchars(strip_tags($this->name));
-        $stmt->bindParam(':name', $this->name);
-
-        if($stmt->execute()) {
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            $this->id = $row['id'];
-            return $stmt;
-        } else {
-            http_response_code(503);
-            exit(json_encode(array("message" => "Blad bazy danych")));
-        }
-    }
-
     public function readAll() {
         $query = "SELECT * FROM {$this->table_name}";
         $stmt = $this->conn->prepare($query);
@@ -107,19 +72,28 @@ class WorldW {
         }
     }
 
-    public function readAllByLocation() {
+    public function readById() {
         $query = "SELECT * FROM {$this->table_name}
-                WHERE idLocation = :idLocation";
-        $stmt = $this->conn->preapre($query);
-        
-        $this->idLocation = htmlspecialchars(strip_tags($this->idLocation));
-        $stmt->bindParam(':idLocation', $this->idLocation);
+                WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+        $this->id = htmlspecialchars(strip_tags($this->id));
+        $stmt->bindParam(':id', $this->id);
 
         if($stmt->execute()) {
-            return $stmt;
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            $this->name = $row['name'];
+            return $this;
         } else {
             http_response_code(503);
-            exit(json_encode(array("message" => "Blad bazy danych")));
+            exit(json_encode(array("message" => "Error found at: file:" . __FILE__ . ",class: " . __CLASS__ . ", function: " . __METHOD__)));
         }
     }
+
+    // public function readByName() {
+
+    // }
+
+    
+
+
 }

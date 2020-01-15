@@ -30,7 +30,7 @@ set_time_limit(1800);
 // INCLUDUJ POTRZEBNE PLIKI
 include_once '../../config/db-meta.php';
 include_once '../../config/db-warehouse.php';
-include_once '../../model/transformHistory.php'; // dodanie rekordu po kazdej ekstrakcji
+include_once '../../model/loadHistory.php'; // dodanie rekordu po kazdej ekstrakcji
 require_once '../../model/world.php';
 require_once '../../component/load.php';
 
@@ -59,8 +59,21 @@ if($_SESSION['active']) {
     $stoper_stop = microtime(true);
     $executionTime = round(($stoper_stop - $stoper_start), 3);
 
+    // dodanie rekordu do logu
+    $loadHistory  = new LoadHistory($dbM);
+    $loadHistory->setIdUser($_SESSION['idUser'])
+                ->setRecordsInserted($load->getRecordInserted())
+                ->setRecordsUpdated($load->getRecordUpdated())
+                ->setExecutionTime($executionTime)
+                ->create();
+
+    $world->setLastOperation(0);
+    $world->update();
+
     http_response_code(200);
-    exit(json_encode(array("executionTime" => $executionTime)));
+    exit(json_encode(array("recordInserted" => $load->getRecordInserted(),
+                            "recordUpdated" => $load->getRecordUpdated(),
+                            "executionTime" => $executionTime)));
 } else {
     http_response_code(400);
     exit(json_encode(array("message" => "Nie masz uprawnien")));

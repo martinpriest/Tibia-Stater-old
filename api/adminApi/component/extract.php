@@ -110,11 +110,12 @@ class Extract {
     }
 
     private function makeDirTree(array $arr) : bool {
-        $dirPath = '../data/';
+        $root = $_SERVER['DOCUMENT_ROOT'];
+        $dirPath = "{$root}/api/adminApi/data/";
         if(!is_dir($dirPath)) mkdir($dirPath);
         if(empty($arr)) return false;
         foreach($arr as $el) {
-            $dirPath = '../data/' . $el['name'];
+            $dirPath = "{$dirPath}/{$el['name']}"; // "{$dirPath}/{$el['name']}"   '../data/' . $el['name']
             if(!is_dir($dirPath)) mkdir($dirPath);
             if(!is_dir($dirPath . '/characters')) mkdir($dirPath . '/characters');
             if(!is_dir($dirPath . '/guilds')) mkdir($dirPath . '/guilds');
@@ -123,6 +124,7 @@ class Extract {
             foreach($highscoreTypes as $type) {
                 if(!is_dir("{$dirPath}/highscores/{$type}")) mkdir("{$dirPath}/highscores/{$type}");
             }
+            $dirPath = "{$root}/api/adminApi/data/";
         }
         return true;
     }
