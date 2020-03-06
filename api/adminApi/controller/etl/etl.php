@@ -22,6 +22,8 @@ include_once '../../model/transformHistory.php'; // dodanie rekordu po kazdej ek
 require_once '../../component/load.php';
 include_once '../../model/loadHistory.php'; // dodanie rekordu po kazdej ekstrakcji
 
+set_time_limit(1800);
+
 if($_SESSION['active']) {
     $stoper_start = microtime(true);
     //OBIEKT POLACZENIA

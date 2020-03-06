@@ -72,9 +72,11 @@ function download(filename, text) {
   }
 
 function drawPlayerTable(data) {
+    var dateFrom = $("<input type='date' id='dateFrom' value='2020-02-18'>");
     var table = $("<table id='playersTable' class='table table-bordered table-hover'>");
     var theader = $("<thead class='thead-dark'><tr><th>Nazwa</th><th>Profesja</th><th>Lvl</th><th>Miasto</th><th>PACC</th></tr></thead>");
     var tbody = $("<tbody>");
+    $("#mainContent").append(dateFrom);
     $("#mainContent").append(table);
     table.append(theader);
     table.append(tbody);
@@ -108,12 +110,23 @@ function drawPlayerTable(data) {
         })
 
         $('#playersTable').DataTable({
-            stateSave: true
+            stateSave: true,
+            "createdRow" : function() {
+                $('[data-toggle="popover"]').popover();
+            },
+            "scrollY": "50vh"
         });
+
         $('#playersTable').addClass('background-opacity');
-        $(function () {
-            $('[data-toggle="popover"]').popover()
-          })
+
+        // $('#playersTable').on('page.dt', () => {
+        //     console.log("fired")
+        //     $('[data-toggle="popover"]').popover();
+        // });
+
+        // $(function () {
+        //     $('[data-toggle="popover"]').popover();
+        //   })
     } else alert("Przeprowadz ETL dla wybranego swiata");    
 }
 
